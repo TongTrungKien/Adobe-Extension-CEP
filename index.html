@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Clips Exporter Pro</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="header-left">
+                <h1>Clips Exporter Pro</h1>
+                <span class="version">v2.0</span>
+            </div>
+            <div class="header-right">
+                <button id="preferencesBtn" class="icon-btn" title="Preferences">⚙️</button>
+                <button id="refreshBtn" class="icon-btn" title="Refresh">🔄</button>
+            </div>
+        </div>
+
+        <!-- Main Panel -->
+        <div id="mainPanel" class="main-panel">
+            
+            <!-- Encoding Preset -->
+            <div class="section">
+                <label class="section-label">Encoding Preset</label>
+                <select id="encodingPreset" class="full-width">
+                    <option value="h264_high">H.264 - High Quality 1080p</option>
+                    <option value="h264_4k">H.264 - High Quality 4K</option>
+                    <option value="prores_422">ProRes 422</option>
+                    <option value="prores_4444">ProRes 4444</option>
+                    <option value="h265_hevc">H.265 (HEVC)</option>
+                    <option value="dnxhd">DNxHD/DNxHR</option>
+                    <option value="custom">Custom Preset...</option>
+                </select>
+            </div>
+
+            <!-- Tracks -->
+            <div class="section">
+                <label class="section-label">Tracks</label>
+                <div class="tracks-controls">
+                    <div class="track-toggles">
+                        <button id="videoTrackBtn" class="track-btn active" data-type="video">V</button>
+                        <button id="audioTrackBtn" class="track-btn active" data-type="audio">A</button>
+                    </div>
+                    <select id="trackMode" class="flex-1">
+                        <option value="all_visible">All Visible</option>
+                        <option value="solo_track">Solo Track</option>
+                    </select>
+                    <div class="toggle-switch">
+                        <input type="checkbox" id="soloTrackToggle">
+                        <label for="soloTrackToggle" class="toggle-label">
+                            <span class="toggle-text">OFF</span>
+                        </label>
+                    </div>
+                </div>
+                <div id="soloTrackSelector" class="solo-track-selector" style="display:none;">
+                    <select id="soloTrackSelect" class="full-width">
+                        <option value="V1">Video Track 1 (V1)</option>
+                        <option value="V2">Video Track 2 (V2)</option>
+                        <option value="V3">Video Track 3 (V3)</option>
+                        <option value="A1">Audio Track 1 (A1)</option>
+                        <option value="A2">Audio Track 2 (A2)</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Clip Filters -->
+            <div class="section">
+                <label class="section-label">Clip Filters</label>
+                <div class="filter-header">
+                    <button id="addFilterBtn" class="btn-secondary-small">
+                        <span>+</span> Add Rule...
+                    </button>
+                </div>
+                <div id="filtersList" class="filters-list">
+                    <!-- Filters will be added here dynamically -->
+                </div>
+            </div>
+
+            <!-- File Name -->
+            <div class="section">
+                <label class="section-label">File Name</label>
+                <div class="filename-input-wrapper">
+                    <input type="text" id="fileNamePattern" value="{clipName}_{###}" placeholder="Enter pattern...">
+                    <button id="insertVariableBtn" class="btn-icon" title="Insert Variable (Shift+Space)">📝</button>
+                </div>
+                <div class="variables-hint">
+                    Available: {clipName} {seqName} {date} {time} {###} {trackName}
+                </div>
+                <div id="variableMenu" class="variable-menu" style="display:none;">
+                    <div class="variable-item" data-var="{clipName}">Clip Name</div>
+                    <div class="variable-item" data-var="{seqName}">Sequence Name</div>
+                    <div class="variable-item" data-var="{date}">Date (YYYY-MM-DD)</div>
+                    <div class="variable-item" data-var="{time}">Time (HH-MM-SS)</div>
+                    <div class="variable-item" data-var="{###}">Index (001, 002...)</div>
+                    <div class="variable-item" data-var="{trackName}">Track Name</div>
+                </div>
+            </div>
+
+            <!-- Output Folder -->
+            <div class="section">
+                <label class="section-label">Output Folder</label>
+                <div class="input-group">
+                    <select id="outputFolderType" class="flex-1">
+                        <option value="project">Project Folder</option>
+                        <option value="custom">Custom Folder...</option>
+                    </select>
+                </div>
+                <input type="text" id="customOutputPath" class="full-width" placeholder="Select folder..." style="display:none;">
+                <button id="browseOutputBtn" class="btn-secondary full-width" style="display:none; margin-top:8px;">Browse...</button>
+            </div>
+
+            <!-- Export -->
+            <div class="section">
+                <label class="section-label">Export</label>
+                <div class="export-controls">
+                    <div class="export-row">
+                        <span>AME</span>
+                        <div class="toggle-switch">
+                            <input type="checkbox" id="useAME" checked>
+                            <label for="useAME" class="toggle-label">
+                                <span class="toggle-text">OFF</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="export-buttons">
+                        <button id="exportActiveSeqBtn" class="btn-secondary flex-1">Active Sequence</button>
+                        <button id="exportSelectedBinBtn" class="btn-secondary flex-1">Selected Bin</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Analyze & Export -->
+            <div class="section action-section">
+                <button id="analyzeBtn" class="btn-primary full-width">
+                    🔍 Analyze Timeline
+                </button>
+                <div id="clipsPreview" class="clips-preview" style="display:none;">
+                    <div class="preview-header">
+                        <span id="clipCount">0 clips detected</span>
+                        <button id="clearFiltersBtn" class="btn-link">Clear Filters</button>
+                    </div>
+                    <div id="clipsList" class="clips-list"></div>
+                </div>
+                <button id="exportBtn" class="btn-export full-width" disabled>
+                     Export All Clips
+                </button>
+                <div id="progress" class="progress-container" style="display:none;">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                    <p id="progressText">Processing...</p>
+                </div>
+            </div>
+
+            <!-- Log -->
+            <div class="section log-section">
+                <div class="log-header">
+                    <span>Console Log</span>
+                    <button id="clearLogBtn" class="btn-link">Clear</button>
+                </div>
+                <div id="log" class="log-console"></div>
+            </div>
+        </div>
+
+        <!-- Preferences Panel -->
+        <div id="preferencesPanel" class="preferences-panel" style="display:none;">
+            <div class="preferences-header">
+                <button id="backBtn" class="icon-btn">◀</button>
+                <h2>Preferences</h2>
+            </div>
+
+            <div class="preferences-content">
+                <!-- Extension -->
+                <div class="pref-section">
+                    <h3>Extension</h3>
+                    <div class="pref-row">
+                        <span>Auto Refresh</span>
+                        <div class="toggle-switch">
+                            <input type="checkbox" id="autoRefresh">
+                            <label for="autoRefresh" class="toggle-label">
+                                <span class="toggle-text">OFF</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="pref-row">
+                        <span>Interval</span>
+                        <input type="range" id="refreshInterval" min="1" max="30" value="5">
+                        <span id="intervalValue">5s</span>
+                    </div>
+                    <div class="pref-row">
+                        <span>Auto Load Last Used Settings</span>
+                        <div class="toggle-switch">
+                            <input type="checkbox" id="autoLoadSettings" checked>
+                            <label for="autoLoadSettings" class="toggle-label">
+                                <span class="toggle-text">OFF</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tracks -->
+                <div class="pref-section">
+                    <h3>Tracks</h3>
+                    <div class="pref-row">
+                        <span>Solo Linked Item(s) Track(s)</span>
+                        <div class="toggle-switch">
+                            <input type="checkbox" id="soloLinkedTracks" checked>
+                            <label for="soloLinkedTracks" class="toggle-label">
+                                <span class="toggle-text">OFF</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Encoding Presets -->
+                <div class="pref-section">
+                    <h3>Encoding Presets</h3>
+                    <div class="preset-buttons">
+                        <button id="importPresetBtn" class="btn-secondary">Import Preset</button>
+                        <button id="addPresetFolderBtn" class="btn-secondary">Add Presets Folder</button>
+                    </div>
+                    <div class="preset-path">
+                        <input type="text" id="presetPath" readonly value="No custom path set">
+                        <button id="removePresetPathBtn" class="btn-icon">−</button>
+                    </div>
+                </div>
+
+                <!-- Notifications -->
+                <div class="pref-section">
+                    <h3>Notifications</h3>
+                    <select id="notificationLevel" class="full-width">
+                        <option value="all">Show all notifications</option>
+                        <option value="errors">Bother me with errors only</option>
+                        <option value="none">Silent mode</option>
+                    </select>
+                </div>
+
+                <!-- Manage Preferences -->
+                <div class="pref-section">
+                    <h3>Manage Preferences</h3>
+                    <div class="manage-buttons">
+                        <button id="importPrefBtn" class="btn-secondary flex-1">Import</button>
+                        <button id="exportPrefBtn" class="btn-secondary flex-1">Export</button>
+                        <button id="resetPrefBtn" class="btn-secondary flex-1">Reset</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="lib/CSInterface.js"></script>
+    <script src="lib/json2.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
