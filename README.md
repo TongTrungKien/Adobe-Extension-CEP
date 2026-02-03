@@ -1,115 +1,106 @@
-Batch Clip Exporter for Premiere Pro
-A CEP extension that enables batch exporting of individual clips from a Premiere Pro timeline directly to Adobe Media Encoder.
+# Batch Clip Exporter for Premiere Pro
 
-🚀 Features
-Automatic Detection: Detects all clips on a selected reference track.
+Extension CEP cho phép xuất hàng loạt các đoạn clip riêng lẻ từ timeline của Premiere Pro sang Adobe Media Encoder.
 
-Individual Batch Export: Exports each clip as a separate file.
+## ✨ Tính năng
 
-Locked Track Support: Includes locked tracks in the final export.
+- 🎬 Tự động phát hiện tất cả clips trên track được chọn
+- 📦 Xuất hàng loạt từng clip thành file riêng biệt
+- 🔓 Bao gồm cả tracks bị khóa (locked) trong export
+- 🎯 Hỗ trợ nhiều format: H.264, ProRes, và custom presets
+- 📝 Tùy chỉnh naming pattern cho output files
+- 📊 Hiển thị preview các clips được phát hiện
+- ⚡ Gửi hàng loạt vào Media Encoder queue
 
-Format Support: Compatible with H.264, ProRes, and custom presets.
+## 📋 Yêu cầu
 
-Dynamic Naming: Customizable naming patterns for output files.
+- Adobe Premiere Pro CC 2020 trở lên
+- Adobe Media Encoder
+- Windows hoặc macOS
 
-Clip Preview: Displays a list of detected clips before processing.
+## 🚀 Cài đặt
 
-Queue Integration: Sends the entire batch to the Media Encoder queue instantly.
+### Windows:
 
-📋 Requirements
-Adobe Premiere Pro CC 2020 or later
+1. **Bật Debug Mode:**
+   - Mở `regedit.exe` (Run as Administrator)
+   - Đi tới: `HKEY_CURRENT_USER\Software\Adobe\CSXS.11\`
+   - Tạo key mới: `PlayerDebugMode` (String Value)
+   - Set giá trị: `1`
 
-Adobe Media Encoder
+2. **Copy extension:**
+   - Giải nén toàn bộ folder extension
+   - Copy vào: `C:\Program Files (x86)\Common Files\Adobe\CEP\extensions\BatchClipExporter\`
 
-Windows or macOS
+3. **Restart Premiere Pro**
 
-🛠 Installation
-Windows:
-Enable Debug Mode:
+### macOS:
 
-Open regedit.exe (Run as Administrator).
+1. **Bật Debug Mode:**
+   ```bash
+   defaults write /Users/<username>/Library/Preferences/com.adobe.CSXS.11.plist PlayerDebugMode 1
+   ```
 
-Navigate to: `HKEY_CURRENT_USER\Software\Adobe\CSXS.11\`
+2. **Copy extension:**
+   - Copy folder vào: `/Library/Application Support/Adobe/CEP/extensions/BatchClipExporter/`
 
-Create a new String Value: PlayerDebugMode.
+3. **Restart Premiere Pro**
 
-Set value to: 1.
+## 📖 Cách sử dụng
 
-Copy Extension:
+1. **Mở Extension:**
+   - Trong Premiere Pro: `Window > Extensions > Batch Clip Exporter`
 
-Extract the extension folder.
+2. **Cấu hình Settings:**
+   - **Reference Track**: Chọn track để phát hiện clips (thường là V2 nếu V1 là nền)
+   - **Output Folder**: Chọn thư mục lưu files export
+   - **Naming Pattern**: 
+     - `clip_{###}` → clip_001.mp4, clip_002.mp4, ...
+     - `video_{name}` → video_OSS.mp4, video_Nền.mp4, ...
+   - **Preset**: Chọn preset Media Encoder (H.264, ProRes, v.v.)
 
-Copy it to: `C:\Program Files (x86)\Common Files\Adobe\CEP\extensions\BatchClipExporter\`
+3. **Analyze Timeline:**
+   - Click "🔍 Analyze Timeline" để quét và hiển thị các clips
+   - Kiểm tra danh sách clips được phát hiện
 
-Restart Premiere Pro.
+4. **Export:**
+   - Click "🚀 Export All Clips to Media Encoder"
+   - Đợi extension gửi từng clip vào Media Encoder queue
+   - Mở Media Encoder để theo dõi tiến trình render
 
-macOS:
-Enable Debug Mode: Run the following command in Terminal:
+## ⚙️ Options
 
-Bash
-```bash
-defaults write /Users/<username>/Library/Preferences/com.adobe.CSXS.11.plist PlayerDebugMode 1
+### Include all tracks
+- ✅ **Bật**: Export bao gồm TẤT CẢ video/audio tracks (kể cả tracks bị khóa)
+- ❌ **Tắt**: Chỉ export tracks đang enabled/targeted
+
+### Ignore gaps
+- ✅ **Bật**: Chỉ export đoạn có content (bỏ qua khoảng trống)
+- ❌ **Tắt**: Export cả gaps giữa các clips
+
+## 🎯 Use Case
+
+### Ví dụ workflow phổ biến:
+
+Bạn có timeline như sau:
+```
+V2: [OSS] [OSS (試用する)] [OSS] [OSS (試用する)] [OSS (記号)]...
+V1: [Nền] [Nền (99%)] [Nền] [Nền (14.09%)]... (LOCKED)
+A1: [Audio 1]
+A2: [Audio 2]
 ```
 
-Copy Extension:
+**Kết quả:**
+- Extension sẽ phát hiện từng clip trên V2
+- Xuất TỪNG ĐOẠN riêng biệt, bao gồm:
+  - Nội dung từ V2 (clip chính)
+  - Nội dung từ V1 (nền - dù đã bị lock)
+  - Audio từ A1, A2, A3
+- Output: `clip_001.mp4`, `clip_002.mp4`, ...
 
-Copy the folder to: `/Library/Application Support/Adobe/CEP/extensions/`
-
-Restart Premiere Pro.
-
-📖 How to Use
-Open Extension:
-
-Go to: Window > Extensions > Batch Clip Exporter.
-
-Configure Settings:
-
-Reference Track: Choose the track to detect clips (e.g., V2 if V1 is a background).
-
-Output Folder: Select your destination directory.
-
-Naming Pattern:
-
-clip_{###} → clip_001.mp4, clip_002.mp4...
-
-video_{name} → video_Overlay.mp4, video_Background.mp4...
-
-Preset: Select your Media Encoder preset (H.264, ProRes, etc.).
-
-Analyze Timeline:
-
-Click "Analyze Timeline" to scan and list detected clips.
-
-Export:
-
-Click "Export All Clips to Media Encoder".
-
-Monitor the rendering progress in Adobe Media Encoder.
-
-⚙️ Options
-Include all tracks
-On: Export includes ALL video/audio tracks (including locked ones).
-
-Off: Only exports enabled/targeted tracks.
-
-Ignore gaps
-On: Only exports segments containing content (skips empty spaces).
-
-Off: Exports everything, including gaps between clips.
-
-💡 Use Case
-Example Workflow: Imagine a timeline structured as follows:
-
-V2: [Clip A] [Clip B] [Clip C]...
-
-V1: [Background Layer] (LOCKED)
-
-A1/A2: [Audio Tracks]
-
-Result: The extension detects each clip on V2 and exports them as separate files that include the content from V2, the background from V1, and all audio tracks.
+## 📁 Cấu trúc Files
 
 ```
-📂 File Structure
 BatchClipExporter/
 ├── CSXS/
 │   └── manifest.xml          # CEP manifest configuration
@@ -123,32 +114,44 @@ BatchClipExporter/
 │   ├── CSInterface.js        # Adobe CEP library
 │   └── json2.js              # JSON library
 ├── index.html                # Main UI
-├── presets                   # Blueprints
 └── README.md
 ```
 
-❓ Troubleshooting
-Extension not appearing: Double-check if PlayerDebugMode is enabled and the folder path is correct.
+## 🐛 Troubleshooting
 
-Export fails: Ensure Media Encoder is open and you have write permissions for the output folder.
+### Extension không hiển thị trong menu:
+- Kiểm tra đã bật PlayerDebugMode chưa
+- Đảm bảo copy đúng folder path
+- Restart Premiere Pro
 
-Clips not detected: Verify the correct Reference Track is selected and the timeline contains active clips.
+### Không thể export:
+- Đảm bảo Media Encoder đang chạy
+- Kiểm tra quyền ghi vào output folder
+- Thử chọn preset khác
 
-🔧 Customization
-Presets: Add paths in jsx/hostscript.jsx within the getPresetPath() function.
+### Clips không được phát hiện:
+- Kiểm tra đã chọn đúng Reference Track chưa
+- Đảm bảo timeline có clips thật sự
+- Thử track khác
 
-UI Theme: Modify css/style.css.
+## 🔧 Customization
 
-Naming Logic: Edit the generateFileName() function in the JSX file.
+Bạn có thể tùy chỉnh:
+- **Presets**: Thêm preset trong `jsx/hostscript.jsx` function `getPresetPath()`
+- **UI Theme**: Chỉnh sửa `css/style.css`
+- **Naming Logic**: Sửa function `generateFileName()` trong JSX
 
-📝 Notes
-Designed for CSXS 11 (Premiere Pro 2021+).
+## 📝 Notes
 
-For older versions, change CSXS.11 to CSXS.9 or CSXS.10 in the manifest and registry/plist.
+- Extension này hoạt động với CSXS 11 (Premiere Pro 2021+)
+- Nếu dùng phiên bản cũ hơn, sửa `CSXS.11` thành `CSXS.9` hoặc `CSXS.10`
+- Tracks bị lock vẫn được render trong output (đây là tính năng, không phải bug!)
 
-Locked tracks are rendered by design to allow background/overlay consistency.
+## 🤝 Credits
 
-🤝 Credits
-Based on the structure of [SIMPLE_QUEUE_TOOL_CEP](https://github.com/Mathsqrt2/SIMPLE_QUEUE_TOOL_CEP).
+Dựa trên cấu trúc của [SIMPLE_QUEUE_TOOL_CEP](https://github.com/Mathsqrt2/SIMPLE_QUEUE_TOOL_CEP)
 
 Special thanks to Hans for his contributions to this tool!
+
+---
+
