@@ -29,7 +29,7 @@ Enable Debug Mode:
 
 Open regedit.exe (Run as Administrator).
 
-Navigate to: HKEY_CURRENT_USER\Software\Adobe\CSXS.11\
+Navigate to: `HKEY_CURRENT_USER\Software\Adobe\CSXS.11\`
 
 Create a new String Value: PlayerDebugMode.
 
@@ -39,7 +39,7 @@ Copy Extension:
 
 Extract the extension folder.
 
-Copy it to: C:\Program Files (x86)\Common Files\Adobe\CEP\extensions\BatchClipExporter\
+Copy it to: `C:\Program Files (x86)\Common Files\Adobe\CEP\extensions\BatchClipExporter\`
 
 Restart Premiere Pro.
 
@@ -47,10 +47,13 @@ macOS:
 Enable Debug Mode: Run the following command in Terminal:
 
 Bash
+```bash
 defaults write /Users/<username>/Library/Preferences/com.adobe.CSXS.11.plist PlayerDebugMode 1
+```
+
 Copy Extension:
 
-Copy the folder to: /Library/Application Support/Adobe/CEP/extensions/BatchClipExporter/
+Copy the folder to: `/Library/Application Support/Adobe/CEP/extensions/`
 
 Restart Premiere Pro.
 
@@ -105,6 +108,7 @@ A1/A2: [Audio Tracks]
 
 Result: The extension detects each clip on V2 and exports them as separate files that include the content from V2, the background from V1, and all audio tracks.
 
+```
 📂 File Structure
 BatchClipExporter/
 ├── CSXS/
@@ -121,6 +125,8 @@ BatchClipExporter/
 ├── index.html                # Main UI
 ├── presets                   # Blueprints
 └── README.md
+```
+
 ❓ Troubleshooting
 Extension not appearing: Double-check if PlayerDebugMode is enabled and the folder path is correct.
 
@@ -143,6 +149,6 @@ For older versions, change CSXS.11 to CSXS.9 or CSXS.10 in the manifest and regi
 Locked tracks are rendered by design to allow background/overlay consistency.
 
 🤝 Credits
-Based on the structure of SIMPLE_QUEUE_TOOL_CEP.
+Based on the structure of [SIMPLE_QUEUE_TOOL_CEP](https://github.com/Mathsqrt2/SIMPLE_QUEUE_TOOL_CEP).
 
 Special thanks to Hans for his contributions to this tool!
