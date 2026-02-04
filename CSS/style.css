@@ -264,6 +264,7 @@ select:disabled {
 .filename-input-wrapper {
     display: flex;
     gap: 6px;
+    position: relative;
 }
 
 .filename-input-wrapper input {
@@ -293,7 +294,7 @@ select:disabled {
 }
 
 .variable-menu {
-    position: absolute;
+    position: absolute; /* Đổi từ fixed thành absolute */
     background-color: #2a2a2a;
     border: 1px solid #3a3a3a;
     border-radius: 4px;
@@ -301,6 +302,16 @@ select:disabled {
     z-index: 1000;
     box-shadow: 0 4px 12px rgba(0,0,0,0.5);
     margin-top: 4px;
+    top: 100%; /* Đặt menu ngay dưới input */
+    left: 0;
+    width: 100%;
+    max-height: 200px;
+    overflow-y: auto;
+    display: none; /* Ẩn mặc định */
+}
+
+.variable-menu.show {
+    display: block;
 }
 
 .variable-item {
@@ -309,6 +320,9 @@ select:disabled {
     border-radius: 3px;
     font-size: 11px;
     transition: background-color 0.2s;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .variable-item:hover {
@@ -808,4 +822,53 @@ button {
 
 .progress-container {
     animation: fadeIn 0.3s ease-in-out;
+}
+
+/* === MESSAGE MODAL STYLES === */
+.message-box {
+    width: 320px;
+    background: #252525;
+    border: 1px solid #3a3a3a;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    transform: scale(0.9);
+    transition: all 0.2s ease;
+    text-align: center;
+}
+
+/* Hiệu ứng khi hiện lên */
+.modal-overlay.show-flex {
+    display: flex !important;
+    animation: fadeIn 0.2s forwards;
+}
+.modal-overlay.show-flex .message-box {
+    transform: scale(1);
+}
+
+.modal-icon {
+    font-size: 40px;
+    margin-bottom: 10px;
+}
+
+#msgTitle {
+    color: #fff;
+    margin-bottom: 8px;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+#msgBody {
+    color: #bbb;
+    margin-bottom: 20px;
+    line-height: 1.4;
+    font-size: 13px;
+}
+
+/* Các loại thông báo */
+.msg-error .modal-icon { color: #ff5252; }
+.msg-success .modal-icon { color: #4CAF50; }
+.msg-info .modal-icon { color: #5d9cec; }
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
 }
